@@ -19,6 +19,16 @@ A simple solution to verify users using a simple captcha with a current limit of
 - Provides a simple and easy-to-use solution for implementing captcha verification in Blazor applications.
 - The current version supports a captcha length of up to six characters.
 
+## Screenshots
+
+A GIF, to see the image and variable content change on page reload
+
+![Animated](https://github.com/liebki/BlazorVerificationCaptcha/assets/71221724/05ba33f2-831d-4143-9417-728f5413247a)
+
+A image, to get the original quality that the image is displayed in
+
+![Static](https://github.com/liebki/BlazorVerificationCaptcha/assets/71221724/3c683847-3302-4976-a8ea-3961c2a0102a)
+
 ## Usage (For more, see examples)
 
 To use BlazorVerificationCaptcha in your Blazor application, follow these steps:
