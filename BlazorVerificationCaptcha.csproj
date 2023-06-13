@@ -1,0 +1,50 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AddRazorSupportForMvc>true</AddRazorSupportForMvc>
+    <Title>BlazorVerificationCaptcha</Title>
+    <PackageId>BlazorVerificationCaptcha</PackageId>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Authors>liebki</Authors>
+    <Description>A simple solution to verify users by solving a simple captcha, all done locally thanks to the image library SkiaSharp</Description>
+    <Copyright>liebki</Copyright>
+    <PackageProjectUrl>https://github.com/liebki/BlazorVerificationCaptcha</PackageProjectUrl>
+    <PackageIcon>uxwing-icon.png</PackageIcon>
+    <RepositoryUrl>https://github.com/liebki/BlazorVerificationCaptcha</RepositoryUrl>
+    <PackageTags>captcha, alternative, simple, blazor, recaptcha alternative</PackageTags>
+    <PackageReleaseNotes>Created the library</PackageReleaseNotes>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
+    <Version>0.1</Version>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="SkiaSharp" Version="2.88.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="LICENSE.txt">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Update="uxwing-icon.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
+
+
+
+</Project>
