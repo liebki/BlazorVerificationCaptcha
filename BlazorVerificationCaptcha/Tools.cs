@@ -9,17 +9,22 @@ namespace BlazorVerificationCaptcha
         /// </summary>
         /// <param name="AddSpaces"></param>
         /// <returns>Random characters as string</returns>
-        internal static string GenerateRandomText(bool AddSpaces = true)
+        internal static string GenerateRandomText(bool UseNumbers, bool AddSpaces = true)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+            StringBuilder sb = new();
             int outputLength = 6;
+
+            string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+
+            if (UseNumbers)
+            {
+                chars += "0123456789";
+            }
 
             if (!AddSpaces)
             {
                 outputLength = 8;
             }
-
-            StringBuilder sb = new();
 
             for (int i = 0; i < outputLength; i++)
             {

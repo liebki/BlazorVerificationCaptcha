@@ -2,22 +2,14 @@
 {
     partial class VerificationCaptcha
     {
-        public static string CaptchaBackup
-        {
-            get
-            {
-                return RenewCaptchaContent();
-            }
-        }
-
         private static string imageURL = string.Empty;
 
-        private static string RenewCaptchaContent()
+        public static string GenerateCaptchaContent(bool IncludeNumbers = true, string TypefaceFamilyName = "Arial")
         {
-            (string image, string text) ImageText = CaptchaGenerator.GenerateCaptcha();
-            imageURL = ImageText.image;
+            (string image, string text) = CaptchaGenerator.GenerateCaptcha(IncludeNumbers, TypefaceFamilyName);
+            imageURL = image;
 
-            return ImageText.text.Replace(" ", string.Empty);
+            return text.Replace(" ", string.Empty);
         }
     }
 }

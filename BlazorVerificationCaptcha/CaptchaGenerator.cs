@@ -8,12 +8,12 @@ namespace BlazorVerificationCaptcha
         /// The generator is subject to change, I want to make it more difficult to read the captcha-content
         /// </summary>
         /// <returns>Image as base64</returns>
-        public static (string imagevalue, string textvalue) GenerateCaptcha()
+        public static (string imagevalue, string textvalue) GenerateCaptcha(bool IncludeNumbers, string TypefaceFamilyName)
         {
             const int width = 200;
             const int height = 50;
 
-            string captchaText = Tools.GenerateRandomText();
+            string captchaText = Tools.GenerateRandomText(IncludeNumbers);
 
             using SKBitmap bitmap = new(width, height);
             using SKCanvas canvas = new(bitmap);
@@ -24,7 +24,7 @@ namespace BlazorVerificationCaptcha
             paint.TextSize = RandomFloatValue(19, 25);
             paint.Color = SKColors.Black;
 
-            using (SKTypeface typeface = SKTypeface.FromFamilyName("Arial"))
+            using (SKTypeface typeface = SKTypeface.FromFamilyName(TypefaceFamilyName))
             using (SKFont font = new(typeface, paint.TextSize))
             {
                 paint.ImageFilter = SKImageFilter.CreateBlur(1, 1);
@@ -37,7 +37,7 @@ namespace BlazorVerificationCaptcha
             }
 
             using SKImage image = SKImage.FromBitmap(bitmap);
-            using SKData data = image.Encode(SKEncodedImageFormat.Png, 100);
+            using SKData data = image.Encode(SKEncodedImageFormat.Jpeg, 100);
 
             return (ConvStreamToBase64(data), captchaText);
         }
@@ -74,7 +74,7 @@ namespace BlazorVerificationCaptcha
             byte[] byteArray = ms.ToArray();
             string b64String = Convert.ToBase64String(byteArray);
 
-            return $"data:image/png;base64,{b64String}";
+            return $"data:image/jpg;base64,{b64String}";
         }
 
         private static float RandomFloatValue(int min, int max)

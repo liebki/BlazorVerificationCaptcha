@@ -15,10 +15,10 @@
     <PackageIcon>uxwing-icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/liebki/BlazorVerificationCaptcha</RepositoryUrl>
     <PackageTags>captcha, alternative, simple, blazor, recaptcha alternative</PackageTags>
-    <PackageReleaseNotes>Created the library</PackageReleaseNotes>
+    <PackageReleaseNotes>Include of 'SkiaSharp.NativeAssets.Linux.NoDependencies' for linux, moved from property CaptchaBackup, to method GenerateCaptchaContent(), new option to enable or disable the use of numbers inside the captcha, changed the image from png to jpg, to save a tiny bit of image size</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>0.1</Version>
+    <Version>0.1.1</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
@@ -28,6 +28,7 @@
 
   <ItemGroup>
     <PackageReference Include="SkiaSharp" Version="2.88.3" />
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux.NoDependencies" Version="2.88.3" />
   </ItemGroup>
 
   <ItemGroup>
@@ -44,7 +45,5 @@
       <PackagePath>\</PackagePath>
     </None>
   </ItemGroup>
-
-
 
 </Project>

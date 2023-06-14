@@ -9,6 +9,7 @@ A simple solution to verify users using a simple captcha with a current limit of
 
 ### NuGet/Dependencies used
 - [SkiaSharp](https://www.nuget.org/packages/SkiaSharp/)
+- [SkiaSharp.NativeAssets.Linux.NoDependencies](https://www.nuget.org/packages/SkiaSharp.NativeAssets.Linux.NoDependencies/) - Needed for Linux (See FAQ)!
 
 ## Features
 
@@ -36,7 +37,7 @@ To use BlazorVerificationCaptcha in your Blazor application, follow these steps:
 1. Install the BlazorVerificationCaptcha package from NuGet.
 2. Add ```@using BlazorVerificationCaptcha``` inside the _Imports.razor
 3. Implement the captcha component in your desired location, by adding ```<VerificationCaptcha />```
-4. Add ```ExampleVariable = VerificationCaptcha.CaptchaBackup;``` inside ```OnInitializedAsync()```, as this code generates the image
+4. Add ```ExampleVariable = VerificationCaptcha.GenerateCaptchaContent();``` inside ```OnInitializedAsync()```, as this code generates the image
 
 ## Example (Component)
 
@@ -51,7 +52,7 @@ Here is an example of how you can use BlazorVerificationCaptcha in your Blazor c
 
     protected override Task OnInitializedAsync()
     {
-        ExampleVariable = VerificationCaptcha.CaptchaBackup;
+        ExampleVariable = VerificationCaptcha.GenerateCaptchaContent();
         return base.OnInitializedAsync();
     }
 }
@@ -81,6 +82,12 @@ This example doesn't show how to handle checking if the captcha is correct but y
 you can easily just do ```if(ExampleVariable.Equals(ExampleInputVariable, StringComparison.InvariantCulture))```.
 
 ## FAQ
+
+#### Notes on linux
+
+I tried using it on linux I learned that in order to run it there you eventually have to install missing packages, I'm running CentOs so I executed:
+```yum install fontconfig freetype freetype-devel fontconfig-devel libstdc++```
+It could be that only 'fontconfig' is needed but I wanted to be sure, so I the captcha is only showing colored backgrounds and no content, install these dependencies you need them.
 
 #### What do I have to be aware of?
 
