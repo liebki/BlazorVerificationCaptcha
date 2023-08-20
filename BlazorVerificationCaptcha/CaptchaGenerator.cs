@@ -4,24 +4,34 @@ namespace BlazorVerificationCaptcha
 {
     public static class CaptchaGenerator
     {
+        private static readonly int minCaptchaLength = 6;
+        private static readonly int baseWidth = 220;
+        private static readonly int baseHeight = 50;
+
         /// <summary>
-        /// The generator is subject to change, I want to make it more difficult to read the captcha-content
+        /// Generates a CAPTCHA image with customizable options.
         /// </summary>
-        /// <returns>Image as base64</returns>
-        public static (string imagevalue, string textvalue) GenerateCaptcha(bool IncludeNumbers, string TypefaceFamilyName)
+        /// <param name="IncludeNumbers">Include numbers in the CAPTCHA text.</param>
+        /// <param name="TypefaceFamilyName">The font family name for the CAPTCHA text.</param>
+        /// <param name="CaptchaLength">The length of the CAPTCHA text.</param>
+        /// <param name="JpegQualityLevel">The JPEG quality level for the image.</param>
+        /// <param name="ReduceRandomCharacters">Reduce the random characters a bit.</param>
+        /// <returns>A tuple containing the image encoded as base64 and the CAPTCHA text.</returns>
+        public static (string imagevalue, string textvalue) GenerateCaptcha(bool IncludeNumbers, string TypefaceFamilyName, int CaptchaLength, int JpegQualityLevel, bool ReduceRandomCharacters)
         {
-            const int width = 200;
-            const int height = 50;
+            int effectiveCaptchaLength = Math.Max(CaptchaLength, minCaptchaLength);
+            int dynamicWidth = baseWidth + (effectiveCaptchaLength - minCaptchaLength) * 10;
 
-            string captchaText = Tools.GenerateRandomText(IncludeNumbers);
+            int dynamicHeight = baseHeight;
+            string captchaText = Tools.GenerateRandomText(IncludeNumbers, CaptchaLength);
 
-            using SKBitmap bitmap = new(width, height);
+            using SKBitmap bitmap = new(dynamicWidth, dynamicHeight);
             using SKCanvas canvas = new(bitmap);
 
             using SKPaint paint = new();
             canvas.Clear(RandomColor(false));
 
-            paint.TextSize = RandomFloatValue(19, 25);
+            paint.TextSize = Tools.RandomFloatValue(19, 25);
             paint.Color = SKColors.Black;
 
             using (SKTypeface typeface = SKTypeface.FromFamilyName(TypefaceFamilyName))
@@ -31,45 +41,62 @@ namespace BlazorVerificationCaptcha
                 paint.FilterQuality = SKFilterQuality.Low;
 
                 paint.TextSkewX = 1;
-                canvas.DrawText(captchaText, RandomFloatValue(44, 62), RandomFloatValue(26, 35), paint);
+                float textWidth = paint.MeasureText(captchaText);
 
-                RandomNumbersAndText(canvas, paint);
+                float textXCord = (dynamicWidth - textWidth) / 2;
+                float textYCord = Tools.RandomFloatValue(26, 35);
+
+                canvas.DrawText(captchaText, textXCord, textYCord, paint);
+                RandomNumbersAndText(canvas, paint, CaptchaLength, ReduceRandomCharacters);
             }
 
             using SKImage image = SKImage.FromBitmap(bitmap);
-            using SKData data = image.Encode(SKEncodedImageFormat.Jpeg, 100);
+            using SKData data = image.Encode(SKEncodedImageFormat.Jpeg, JpegQualityLevel);
 
             return (ConvStreamToBase64(data), captchaText);
         }
 
-        private static void RandomNumbersAndText(SKCanvas canvas, SKPaint paint)
+        /// <summary>
+        /// Adds random characters to the canvas to create additional complexity in the CAPTCHA image.
+        /// </summary>
+        /// <param name="Canvas">The SKCanvas object to draw on.</param>
+        /// <param name="Paint">The SKPaint object to define text rendering properties.</param>
+        /// <param name="CaptchaLength">The total length of the CAPTCHA text.</param>
+        /// <param name="ReduceRandomCharacters">Flag indicating whether to reduce random characters.</param>
+        private static void RandomNumbersAndText(SKCanvas Canvas, SKPaint Paint, int CaptchaLength, bool ReduceRandomCharacters)
         {
-            paint.TextSize = 12;
-            paint.Color = RandomColor();
+            for (int i = 0; i < CaptchaLength; i++)
+            {
+                char randomChar;
+                if (ReduceRandomCharacters && i % 2 == 0)
+                {
+                    randomChar = ' ';
+                }
+                else
+                {
+                    randomChar = Tools.AlphabetAndNumbers[Convert.ToInt32(Tools.RandomFloatValue(0, Tools.AlphabetAndNumbers.Length))];
+                }
 
-            canvas.DrawText(Convert.ToString(RandomFloatValue(0, 99)), 20, 20, paint);
-            paint.Color = RandomColor();
+                string randomString = randomChar.ToString();
+                Paint.TextSize = Tools.RandomFloatValue(12, 18);
 
-            paint.TextSize = 10;
-            canvas.DrawText(Convert.ToString(RandomFloatValue(99, 199)), 20, 40, paint);
+                Paint.Color = RandomColor(true);
+                float xCord = Tools.RandomFloatValue(0, Convert.ToInt32(Canvas.LocalClipBounds.Width));
 
-            paint.TextSize = 11;
-            paint.Color = RandomColor();
-
-            canvas.DrawText(Convert.ToString(RandomFloatValue(199, 299)), 175, 20, paint);
-            paint.Color = RandomColor();
-
-            canvas.DrawText(Convert.ToString(RandomFloatValue(299, 399)), 175, 33, paint);
-            paint.TextSize = 13;
-
-            paint.Color = RandomColor();
-            canvas.DrawText(Tools.GenerateRandomText(false), 80, RandomFloatValue(48, 54), paint);
+                float yCord = Tools.RandomFloatValue(0, Convert.ToInt32(Canvas.LocalClipBounds.Height));
+                Canvas.DrawText(randomString, xCord, yCord, Paint);
+            }
         }
 
-        private static string ConvStreamToBase64(SKData data)
+        /// <summary>
+        /// Converts the provided SKData to a base64-encoded string with a data URI for image embedding.
+        /// </summary>
+        /// <param name="Data">The SKData to be converted.</param>
+        /// <returns>A base64-encoded string representing the provided image data.</returns>
+        private static string ConvStreamToBase64(SKData Data)
         {
             MemoryStream ms = new();
-            data.SaveTo(ms);
+            Data.SaveTo(ms);
 
             byte[] byteArray = ms.ToArray();
             string b64String = Convert.ToBase64String(byteArray);
@@ -77,21 +104,19 @@ namespace BlazorVerificationCaptcha
             return $"data:image/jpg;base64,{b64String}";
         }
 
-        private static float RandomFloatValue(int min, int max)
-        {
-            return Random.Shared.Next(min, max);
-        }
-
+        /// <summary>
+        /// Generates a random color for the background or foreground of the CAPTCHA image.
+        /// </summary>
+        /// <param name="IsForegroundColorNeeded">Flag indicating whether a foreground color is needed.</param>
+        /// <returns>A random SKColor object representing the selected color.</returns>
         private static SKColor RandomColor(bool IsForegroundColorNeeded = true)
         {
             if (IsForegroundColorNeeded)
             {
-                SKColor[] ForegroundColors = new SKColor[] { SKColors.Black, SKColors.DarkBlue, SKColors.DarkGreen, SKColors.DarkViolet };
-                return ForegroundColors[Random.Shared.Next(ForegroundColors.Length)];
+                return Tools.ForegroundColors[Random.Shared.Next(Tools.ForegroundColors.Length)];
             }
 
-            SKColor[] BackgroundColors = new SKColor[] { SKColors.White, SKColors.Yellow, SKColors.LightBlue, SKColors.OrangeRed };
-            return BackgroundColors[Random.Shared.Next(BackgroundColors.Length)];
+            return Tools.BackgroundColors[Random.Shared.Next(Tools.BackgroundColors.Length)];
         }
     }
 }

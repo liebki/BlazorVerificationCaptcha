@@ -9,16 +9,16 @@
     <PackageId>BlazorVerificationCaptcha</PackageId>
     <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
     <Authors>liebki</Authors>
-    <Description>A simple solution to verify users by solving a simple captcha, all done locally thanks to the image library SkiaSharp</Description>
+    <Description>A simple solution to verify users by solving a simple captcha, all done locally without disrespecting privacy</Description>
     <Copyright>liebki</Copyright>
     <PackageProjectUrl>https://github.com/liebki/BlazorVerificationCaptcha</PackageProjectUrl>
     <PackageIcon>uxwing-icon.png</PackageIcon>
     <RepositoryUrl>https://github.com/liebki/BlazorVerificationCaptcha</RepositoryUrl>
     <PackageTags>captcha, alternative, simple, blazor, recaptcha alternative</PackageTags>
-    <PackageReleaseNotes>Include of 'SkiaSharp.NativeAssets.Linux.NoDependencies' for linux, moved from property CaptchaBackup, to method GenerateCaptchaContent(), new option to enable or disable the use of numbers inside the captcha, changed the image from png to jpg, to save a tiny bit of image size</PackageReleaseNotes>
+    <PackageReleaseNotes>This update introduces customizable CAPTCHA length, dynamic image dimensions based on length, adjustable image quality, and various refinements for improved functionality.</PackageReleaseNotes>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageRequireLicenseAcceptance>True</PackageRequireLicenseAcceptance>
-    <Version>0.1.1</Version>
+    <Version>0.1.2</Version>
     <PackageReadmeFile>README.md</PackageReadmeFile>
   </PropertyGroup>
 
